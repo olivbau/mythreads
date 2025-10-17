@@ -40,6 +40,10 @@ Required environment variables in `.env`:
 - `SLACK_SIGNING_SECRET` - From Basic Information > App Credentials
 - `SLACK_APP_TOKEN` - xapp-... (from Socket Mode)
 
+Optional environment variables:
+
+- `BACKFILL_DAYS` - Number of days to scan on startup (default: 1)
+
 Copy `.env.example` to `.env` and fill in the values.
 
 ## Architecture
@@ -118,13 +122,16 @@ When a new rename command is detected, sets `isManuallyRenamed = true` for that 
 - Generates permalinks for each thread
 - Returns ephemeral message (visible only to requesting user)
 
-## Configuration (src/config.ts)
+## Configuration
 
-Adjustable constants:
+### Environment Variables (.env)
+
+- `BACKFILL_DAYS`: Default 1 - days of history to scan on startup
+
+### Code Constants (src/config.ts)
 
 - `CLOSE_KEYWORDS`: Default ["close", ":lock:"] - keywords to mark thread as closed
 - `RENAME_PREFIXES`: Default ["name:", ":thread:", "rename:"] - prefixes for rename commands
-- `BACKFILL_DAYS`: Default 1 - days of history to scan on startup
 
 ## Key Implementation Details
 
@@ -155,5 +162,5 @@ To test manually:
 
 **Change close keywords**: Edit `CLOSE_KEYWORDS` in src/config.ts (add/remove keywords)
 **Change rename prefixes**: Edit `RENAME_PREFIXES` in src/config.ts (add/remove prefixes)
-**Adjust backfill window**: Edit `BACKFILL_DAYS` in src/config.ts
+**Adjust backfill window**: Edit `BACKFILL_DAYS` in .env file
 **Modify /mythreads filtering**: Edit `getUserOpenRenamedThreads()` in src/store.ts

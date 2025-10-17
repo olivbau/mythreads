@@ -5,7 +5,7 @@ dotenv.config();
 // Configurable constants
 export const CLOSE_KEYWORDS = ["close", ":lock:"]; // Keywords to close a thread (case insensitive)
 export const RENAME_PREFIXES = ["name:", ":thread:", "rename:"]; // Prefixes to rename a thread (e.g., "name: New Thread Name")
-export const BACKFILL_DAYS = 1; // Number of days to backfill at startup
+export const BACKFILL_DAYS = parseInt(process.env.BACKFILL_DAYS || "1", 10); // Number of days to backfill at startup
 
 // Slack environment variables
 export const SLACK_BOT_TOKEN = process.env.SLACK_BOT_TOKEN || "";

@@ -82,6 +82,9 @@ cp .env.example .env
 SLACK_BOT_TOKEN=xoxb-... (from step 6)
 SLACK_SIGNING_SECRET=... (from step 7)
 SLACK_APP_TOKEN=xapp-... (from step 3)
+
+# Optional configuration
+BACKFILL_DAYS=1  # Number of days to scan on startup
 ```
 
 ## Running the Bot
@@ -135,16 +138,19 @@ Closed threads won't appear in `/mythreads` anymore. You can configure additiona
 
 ## Configuration
 
-Edit `src/config.ts` to customize behavior:
+### Environment Variables (.env)
+
+- `BACKFILL_DAYS` (default: `1`)
+  - Number of days of history to scan on startup
+  - Can be configured in `.env` file
+
+### Code Configuration (src/config.ts)
 
 - `CLOSE_KEYWORDS` (default: `["close", ":lock:"]`)
   - Array of keywords to mark a thread as closed (case insensitive)
 
 - `RENAME_PREFIXES` (default: `["name:", ":thread:", "rename:"]`)
   - Array of prefixes to rename a thread (e.g., "name: New Name", ":thread: New Name")
-
-- `BACKFILL_DAYS` (default: `1`)
-  - Number of days of history to scan on startup
 
 ## How It Works
 
