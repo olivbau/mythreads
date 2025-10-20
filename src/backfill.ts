@@ -1,6 +1,7 @@
 import { App } from '@slack/bolt';
 import { BACKFILL_DAYS } from './config';
-import { upsertThread, extractRenameCommand, generateThreadName } from './store';
+import { upsertThread } from './store';
+import { extractRenameCommand, generateThreadName } from './helpers';
 
 /**
  * Runs backfill: fetches recent thread history
@@ -95,8 +96,11 @@ export async function runBackfill(app: App): Promise<void> {
             }
             threadName = customName || generateThreadName(rootMessageText);
 
+            // Convert root.ts to number (it's a string timestamp in seconds)
+            const createdAt = parseFloat(root.ts);
+
             // Upsert in store
-            upsertThread(channel.id, root.ts, threadName, isManuallyRenamed, participants, lastMessageText);
+            upsertThread(channel.id, root.ts, threadName, isManuallyRenamed, participants, lastMessageText, createdAt);
           } catch (err) {
             console.error(`[Backfill] Error fetching replies:`, err);
           }

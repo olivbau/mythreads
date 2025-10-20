@@ -1,5 +1,6 @@
 import { App } from '@slack/bolt';
-import { upsertThread, getThread, extractRenameCommand, generateThreadName } from './store';
+import { upsertThread, getThread } from './store';
+import { extractRenameCommand, generateThreadName } from './helpers';
 
 /**
  * Sets up event handlers for messages
@@ -97,8 +98,11 @@ async function handleThreadReply(
       }
       threadName = customName || generateThreadName(rootMessageText);
 
+      // Convert threadTs to number (it's a string timestamp in seconds)
+      const createdAt = parseFloat(threadTs);
+
       // Create the thread
-      upsertThread(channel, threadTs, threadName, isManuallyRenamed, participants, lastMessageText);
+      upsertThread(channel, threadTs, threadName, isManuallyRenamed, participants, lastMessageText, createdAt);
       console.log(`[Handler] Thread rebuilt: ${channel}:${threadTs}`);
     } catch (err) {
       console.error(`[Handler] Error rebuilding thread:`, err);
@@ -118,6 +122,7 @@ async function handleThreadReply(
       console.log(`[Handler] Thread updated: ${channel}:${threadTs}`);
     }
 
-    upsertThread(channel, threadTs, threadName, isManuallyRenamed, thread.participants, text);
+    // Preserve the original createdAt timestamp
+    upsertThread(channel, threadTs, threadName, isManuallyRenamed, thread.participants, text, thread.createdAt);
   }
 }

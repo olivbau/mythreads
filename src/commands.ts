@@ -1,5 +1,6 @@
 import { App } from '@slack/bolt';
 import { getUserOpenRenamedThreads } from './store';
+import { formatTimeAgo } from './helpers';
 
 /**
  * Sets up the /mythreads command
@@ -32,12 +33,15 @@ export function setupCommands(app: App): void {
             message_ts: thread.ts,
           });
 
+          const timeAgo = formatTimeAgo(thread.createdAt);
+
           if (permalinkResult.permalink) {
-            threadLinks.push(`• <${permalinkResult.permalink}|${thread.name}> in <#${thread.channel}>`);
+            threadLinks.push(`• <${permalinkResult.permalink}|${thread.name}> in <#${thread.channel}> (${timeAgo})`);
           }
         } catch (err) {
           console.error('[Command] Error fetching permalink:', err);
-          threadLinks.push(`• ${thread.name} in <#${thread.channel}> (link unavailable)`);
+          const timeAgo = formatTimeAgo(thread.createdAt);
+          threadLinks.push(`• ${thread.name} in <#${thread.channel}> (${timeAgo}) (link unavailable)`);
         }
       }
 
